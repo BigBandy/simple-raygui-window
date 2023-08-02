@@ -88,7 +88,9 @@ int main(void) {
                             windowBounds.width = screen_width - windowBounds.x;
                         }
 
-                        if (windowBounds.height > screen_height - windowBounds.y) {
+                        if (windowBounds.height < 48) {
+                            windowBounds.height = 48;
+                        } else if (windowBounds.height > screen_height - windowBounds.y) {
                             windowBounds.height = screen_height - windowBounds.y;
                         }
                     } else windowStretching = false;
