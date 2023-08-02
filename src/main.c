@@ -15,7 +15,7 @@ bool windowGrabbed = false;
 bool windowStretching = false;
 const char *windowTitle = "raygui";
 
-Rectangle windowOpenBounds = {
+Rectangle windowOpenBounds = {      // in case you close the window like a doofus.
     0.0f, 0.0f,
     24.0f, 24.0f
 };
@@ -37,7 +37,7 @@ int main(void) {
 
         if (windowActive) {
             // Window dragging logic
-            if ((CheckCollisionPointRec(mouse_position, (Rectangle){windowBounds.x, windowBounds.y, windowBounds.width, 24}) || windowGrabbed) && m1) {
+            if ((CheckCollisionPointRec(mouse_position, (Rectangle){windowBounds.x, windowBounds.y, windowBounds.width, 24}) || windowGrabbed) && m1) { // <- Rectangle is window bar.
                 windowGrabbed = true;
 
                 windowBounds.x += mouse_delta.x;
@@ -70,11 +70,13 @@ int main(void) {
             if (windowActive) {
                 windowActive = !GuiWindowBox(windowBounds, windowTitle);
 
+                GuiLabel((Rectangle){windowBounds.x + 4, windowBounds.y + 24, windowBounds.width, 24}, TextFormat("%i FPS", GetFPS()));
+
                 // Window stretching logic
-                if ((CheckCollisionPointRec(mouse_position, (Rectangle){windowBounds.x + windowBounds.width - 4, windowBounds.y + windowBounds.height - 4, 8, 8}) || windowStretching)) { // <- rectangle is bottom right corner of window
+                if ((CheckCollisionPointRec(mouse_position, (Rectangle){windowBounds.x + windowBounds.width - 4, windowBounds.y + windowBounds.height - 4, 8, 8}) || windowStretching)) { // <- Rectangle is bottom right corner of window.
                     SetMouseCursor(MOUSE_CURSOR_RESIZE_NWSE);
                     
-                    if (m1) {
+                    if (m1 && !windowGrabbed) {
                         windowStretching = true;
 
                         windowBounds.width += mouse_delta.x;
@@ -92,7 +94,7 @@ int main(void) {
                     } else windowStretching = false;
                     
                 } else {
-                    SetMouseCursor(MOUSE_CURSOR_ARROW);
+                    SetMouseCursor(MOUSE_CURSOR_DEFAULT);
                     windowStretching = false;
                 }
             } else windowActive = GuiButton(windowOpenBounds, windowOpenText);
