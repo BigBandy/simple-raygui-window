@@ -21,7 +21,7 @@
                 }
             ],
             "windows": {
-                "miDebuggerPath": "C:/msys64/mingw64/bin/gdb.exe"
+                "miDebuggerPath": "C:/msys64/ucrt64/bin/gdb.exe"
             },
             "preLaunchTask": "Make"
         }
