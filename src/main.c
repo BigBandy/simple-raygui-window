@@ -114,8 +114,9 @@ int main(void) {
 				} else if (window.bounds.y > (float)screen_height - window.bounds.height) {
 					window.bounds.y = (float)screen_height - window.bounds.height;
 				}
+            }
 
-				// Window stretching logic
+			// Window stretching logic
                 if (!window_dragging && (IsPointOnWindowCorner(window.bounds, mouse_position) || window_stretching) ) {
                     SetMouseCursor(MOUSE_CURSOR_RESIZE_NWSE);
                     
@@ -142,7 +143,6 @@ int main(void) {
                     SetMouseCursor(MOUSE_CURSOR_DEFAULT);
                     window_stretching = false;
                 }
-            }
         }
 
         // Draw (and a little updating bc immediate mode, y'know)
