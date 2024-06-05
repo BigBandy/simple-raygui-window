@@ -10,6 +10,8 @@
 		- Unwieldy if statements refactored into functions.
 		- GUI measurements are now based on a constant unit.
 		- Resizing is now based on window position instead of solely mouse delta.
+		- Resizing is no longer performed in the middle of the draw loop (wtf andy)
+		- Program window is now resizable.
 */
 
 #include <raylib.h>
@@ -77,6 +79,8 @@ int main(void) {
 		GuiIconText(ICON_BURGER_MENU, "")
 	};
 
+	SetConfigFlags(FLAG_WINDOW_RESIZABLE);
+
 	InitWindow(SCREEN_WIDTH_DEFAULT, SCREEN_HEIGHT_DEFAULT, window_title);
 	SetExitKey(KEY_NULL);
 
@@ -100,7 +104,7 @@ int main(void) {
 
 				window.bounds.x += mouse_delta.x;
 				window.bounds.y += mouse_delta.y;
-            } else {
+			} else {
 				window_dragging = false;
 
 				if (window.bounds.x < 0) {
@@ -114,55 +118,55 @@ int main(void) {
 				} else if (window.bounds.y > (float)screen_height - window.bounds.height) {
 					window.bounds.y = (float)screen_height - window.bounds.height;
 				}
-            }
+			}
 
 			// Window stretching logic
-                if (!window_dragging && (IsPointOnWindowCorner(window.bounds, mouse_position) || window_stretching) ) {
-                    SetMouseCursor(MOUSE_CURSOR_RESIZE_NWSE);
-                    
-                    if (m1) {
-                        window_stretching = true;
+			if (!window_dragging && (IsPointOnWindowCorner(window.bounds, mouse_position) || window_stretching) ) {
+				SetMouseCursor(MOUSE_CURSOR_RESIZE_NWSE);
+				
+				if (m1) {
+					window_stretching = true;
 
-                        window.bounds.width += mouse_position.x - (window.bounds.x + window.bounds.width);
-                        window.bounds.height += mouse_position.y - (window.bounds.y + window.bounds.height);
+					window.bounds.width += mouse_position.x - (window.bounds.x + window.bounds.width);
+					window.bounds.height += mouse_position.y - (window.bounds.y + window.bounds.height);
 
-                        if (window.bounds.width < GUI_UNIT * 3) {
-							window.bounds.width = GUI_UNIT * 3;
-                        } else if (window.bounds.width > screen_width - window.bounds.x) {
-                            window.bounds.width = screen_width - window.bounds.x;
-                        }
+					if (window.bounds.width < GUI_UNIT * 3) {
+						window.bounds.width = GUI_UNIT * 3;
+					} else if (window.bounds.width > screen_width - window.bounds.x) {
+						window.bounds.width = screen_width - window.bounds.x;
+					}
 
-                        if (window.bounds.height < GUI_UNIT * 2) {
-                            window.bounds.height = GUI_UNIT * 2;
-                        } else if (window.bounds.height > screen_height - window.bounds.y) {
-                            window.bounds.height = screen_height - window.bounds.y;
-                        }
-                    } else window_stretching = false;
-                    
-                } else {
-                    SetMouseCursor(MOUSE_CURSOR_DEFAULT);
-                    window_stretching = false;
-                }
-        }
+					if (window.bounds.height < GUI_UNIT * 2) {
+						window.bounds.height = GUI_UNIT * 2;
+					} else if (window.bounds.height > screen_height - window.bounds.y) {
+						window.bounds.height = screen_height - window.bounds.y;
+					}
+				} else window_stretching = false;
+				
+			} else {
+				SetMouseCursor(MOUSE_CURSOR_DEFAULT);
+				window_stretching = false;
+			}
+		}
 
-        // Draw (and a little updating bc immediate mode, y'know)
+		// Draw (and a little updating bc immediate mode, y'know)
 
-        BeginDrawing();
-            
-            ClearBackground(BLACK);
+		BeginDrawing();
+			
+			ClearBackground(BLACK);
 
-            if (window.active) {
-                
-                window.active = !GuiWindowBox(window.bounds, window.text);
+			if (window.active) {
+				
+				window.active = !GuiWindowBox(window.bounds, window.text);
 
-                GuiLabel((Rectangle){window.bounds.x + GUI_UNIT / 6, window.bounds.y + GUI_UNIT, window.bounds.width, GUI_UNIT}, TextFormat("%i FPS", GetFPS()));
+				GuiLabel((Rectangle){window.bounds.x + GUI_UNIT / 6, window.bounds.y + GUI_UNIT, window.bounds.width, GUI_UNIT}, TextFormat("%i FPS", GetFPS()));
 
-            } else window.active = GuiButton(open_window.bounds, open_window.text);
-        
-        EndDrawing();
-    }
+			} else window.active = GuiButton(open_window.bounds, open_window.text);
+		
+		EndDrawing();
+	}
 
-    CloseWindow();
+	CloseWindow();
 
-    return 0;
+	return 0;
 }
